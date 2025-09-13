@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"time"
 )
 
 // App struct
@@ -25,8 +27,13 @@ func (a *App) GetTasks() []Task{
 	return tasks
 }
 
-func (a *App) AddTask(title string) Task {
-	return addTask(title)
+func (a *App) AddTask(task Task) Task {
+	task.ID = time.Now().UnixNano()
+	task.CreatedAt = time.Now()
+	tasks = append(tasks, task)
+	saveTasks()
+	fmt.Println("Task added:", task.Title)
+	return task
 }
 
 func (a *App) ToggleTask(id int64) {
@@ -36,3 +43,4 @@ func (a *App) ToggleTask(id int64) {
 func (a *App) DeleteTask(id int64){
 	deleteTask(id)
 }
+
