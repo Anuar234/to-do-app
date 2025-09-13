@@ -4,6 +4,13 @@ import {GetTasks, AddTask, ToggleTask, DeleteTask} from "../wailsjs/go/main/App"
 function App() {
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState("");
+    const [filter, setFilter] = useState("all");
+
+    const filteredTasks = tasks.filter(t => {
+        if (filter === "active") return !t.completed;
+        if (filter === "passive") return t.completed;
+        return true;
+    });
 
     useEffect(() => {
         GetTasks().then(setTasks);
@@ -39,6 +46,9 @@ function App() {
             </div>
 
             <ul>
+                <button onClick={() => setFilter("all")} className="px-2 py-1 border">Все</button>
+                <button onClick={() => setFilter("active")} className="px-2 py-1 border">Активные</button>
+                <button onClick={() => setFilter("completed")} className="px-2 py-1 border">Выполненные</button>
                 {tasks.map(t => (
                     <li key={t.id} className="flex justify-between p-2 border-b">
                         <span
