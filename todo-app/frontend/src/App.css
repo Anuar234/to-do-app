@@ -1,59 +1,168 @@
-#app {
-    height: 100vh;
-    text-align: center;
+/* frontend/src/App.css */
+
+
+
+:root {
+  --bg-color: #f9f9f9;
+  --text-color: #222;
+  --card-bg: #fff;
+  --border-color: #ddd;
 }
 
-#logo {
-    display: block;
-    width: 50%;
-    height: 50%;
-    margin: auto;
-    padding: 10% 0 0;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-origin: content-box;
+[data-theme="dark"] {
+  --bg-color: #181818;
+  --text-color: #eee;
+  --card-bg: #222;
+  --border-color: #444;
 }
 
-.result {
-    height: 20px;
-    line-height: 20px;
-    margin: 1.5rem auto;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg-color);
+  color: var(--text-color);
 }
 
-.input-box .btn {
-    width: 60px;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 3px;
-    border: none;
-    margin: 0 0 0 20px;
-    padding: 0 8px;
-    cursor: pointer;
+.container {
+  max-width: 720px;
+  margin: 24px auto;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  transition: background 0.3s, color 0.3s;
 }
 
-.input-box .btn:hover {
-    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
-    color: #333333;
+
+
+h1 {
+  margin-bottom: 12px;
+  text-align: center;
 }
 
-.input-box .input {
-    border: none;
-    border-radius: 3px;
-    outline: none;
-    height: 30px;
-    line-height: 30px;
-    padding: 0 10px;
-    background-color: rgba(240, 240, 240, 1);
-    -webkit-font-smoothing: antialiased;
+.input-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
-.input-box .input:hover {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
+.input-row input {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.input-box .input:focus {
-    border: none;
-    background-color: rgba(255, 255, 255, 1);
+.input-row button {
+  padding: 8px 12px;
+  border: none;
+  background: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
 }
+.input-row button:hover {
+  background: #0056b3;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  align-items: center;
+}
+
+.filters button {
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.filters button.active {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.task-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.task-title {
+  flex: 1;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-icon {
+  font-size: 16px;
+}
+
+.task-date {
+  color: #888;
+  font-size: 12px;
+  margin-right: 12px;
+}
+
+.task-delete {
+  color: #c00;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
+}
+.task-delete:hover {
+  color: #900;
+}
+
+
+@media (max-width: 600px) {
+  .container {
+    margin: 0;
+    border-radius: 0;
+    max-width: 100%;
+    padding: 12px;
+  }
+
+  .input-row {
+    flex-direction: column;
+  }
+
+  .filters {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .task-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-date {
+    margin: 4px 0;
+  }
+}
+
+.task-item.high { background-color: #ffcccc; }
+.task-item.medium { background-color: #fff2cc; }
+.task-item.low { background-color: #ccffcc; }
+
+.task-title.done {
+  text-decoration: line-through;
+  color: gray;
+  opacity: 0.7;
+}
+
