@@ -6,7 +6,8 @@ export namespace main {
 	    completed: boolean;
 	    // Go type: time
 	    created_at: any;
-	    due_date?: string;
+	    // Go type: time
+	    due_date?: any;
 	    priority?: string;
 	
 	    static createFrom(source: any = {}) {
@@ -19,7 +20,7 @@ export namespace main {
 	        this.title = source["title"];
 	        this.completed = source["completed"];
 	        this.created_at = this.convertValues(source["created_at"], null);
-	        this.due_date = source["due_date"];
+	        this.due_date = this.convertValues(source["due_date"], null);
 	        this.priority = source["priority"];
 	    }
 	
