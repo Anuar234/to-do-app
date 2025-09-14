@@ -18,30 +18,30 @@ type Task struct {
 var tasks []Task
 const filename = "tasks.json"
 
-func loadTasks() {
-	data, err := os.ReadFile(filename)
-	if err == nil {
-		json.Unmarshal(data, &tasks)
-	}
-}
+// func loadTasks() {
+// 	data, err := os.ReadFile(filename)
+// 	if err == nil {
+// 		json.Unmarshal(data, &tasks)
+// 	}
+// }
 
 func saveTasks() {
 	data, _ := json.MarshalIndent(tasks, "", " ")
 	os.WriteFile(filename, data, 0644)
 }
 
-func addTask(title string) Task {
-	task := Task{
-		ID: time.Now().UnixNano(),
-		Title: title,
-		Completed: false,
-		CreatedAt: time.Now(),
-	}
+// func addTask(title string) Task {
+// 	task := Task{
+// 		ID: time.Now().UnixNano(),
+// 		Title: title,
+// 		Completed: false,
+// 		CreatedAt: time.Now(),
+// 	}
 
-	tasks = append(tasks, task)
-	saveTasks()
-	return task
-}
+// 	tasks = append(tasks, task)
+// 	saveTasks()
+// 	return task
+// }
 
 
 func toggleTask(id int64) {
@@ -54,13 +54,13 @@ func toggleTask(id int64) {
 	saveTasks()
 }
 
-func deleteTask(id int64) {
-	newTasks := []Task{}
-	for _, t := range tasks {
-		if t.ID != id {
-			newTasks = append(newTasks, t)
-		}
-	}
-	tasks = newTasks
-	saveTasks()
-}
+// func deleteTask(id int64) {
+// 	newTasks := []Task{}
+// 	for _, t := range tasks {
+// 		if t.ID != id {
+// 			newTasks = append(newTasks, t)
+// 		}
+// 	}
+// 	tasks = newTasks
+// 	saveTasks()
+// }
