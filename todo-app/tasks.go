@@ -7,12 +7,12 @@ import (
 )
 
 type Task struct {
-	ID        	int64  		`json:"id"`
-	Title     	string 		`json:"title"`
-	Completed 	bool   		`json:"completed"`
-	CreatedAt 	time.Time 	`json:"created_at"`
-	DueDate 	string 		`json:"due_date,omitempty"`
-	Priority 	string 		`json:"priority,omitempty"`
+	ID        	int64  		`json:"id" db:"id"` 
+	Title     	string 		`json:"title" db:"title"`
+	Completed 	bool   		`json:"completed" db:"completed"`
+	CreatedAt 	time.Time 	`json:"created_at" db:"created_at"`
+	DueDate 	*time.Time 		`json:"due_date,omitempty" db:"due_date"`
+	Priority 	string 		`json:"priority,omitempty" db:"priority"`
 }
 
 var tasks []Task
