@@ -152,6 +152,10 @@ const handleAdd = async () => {
             {t.title || t.Title || "(без названия)"}
           </span>
 
+          <span className={`priority-bagde ${t.priority || "low"}`}>
+          {t.priority || "low"}
+          </span>
+
           <small className="task-date">{formatDate(getCreatedDate(t))}</small>
 
           <button className="task-delete" onClick={() => handleDelete(t.id)}>✕</button>
