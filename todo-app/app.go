@@ -24,6 +24,12 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) GetTasks() []Task{
+	var tasks []Task
+	err := db.Select(&tasks, "SELECT * FROM tasks ORDER BY created_at DESC")
+	if err != nil {
+		fmt.Println("DB error: ", err)
+		return []Task{}
+	}
 	return tasks
 }
 
