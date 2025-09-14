@@ -20,7 +20,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
-	loadTasks()
+	initDB()
 }
 
 func (a *App) GetTasks() []Task{
