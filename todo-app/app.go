@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"time"
 )
 
 // App struct
@@ -34,11 +33,16 @@ func (a *App) GetTasks() []Task{
 }
 
 func (a *App) AddTask(task Task) Task {
-	task.ID = time.Now().UnixNano()
-	task.CreatedAt = time.Now()
-	tasks = append(tasks, task)
-	saveTasks()
-	fmt.Println("Task added:", task.Title)
+	err := db.QueryRow(
+		`INSERT INTO tasks (title, completed, priority, due_date)
+		VALUES ($1, $2, $3, $4) RETURNING id, created_at`,
+		task.Title, task.Completed, task.Priority, task.DueDate,
+	).Scan(&task.ID, &task.CreatedAt)
+
+	if err != nil {
+		fmt.Println("insert error", err)
+	}
+
 	return task
 }
 
@@ -47,6 +51,9 @@ func (a *App) ToggleTask(id int64) {
 } 	
 
 func (a *App) DeleteTask(id int64){
-	deleteTask(id)
+	_, err := db.Exec("DELETE FROM tasks WHERE id=$1", id)
+	if err != nil {
+		fmt.Println("Delete error", err)
+	}
 }
 
