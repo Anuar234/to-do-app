@@ -18,6 +18,7 @@ export default function App() {
   const parseDate = (d) => {
   if (!d) return null;
   const dt = new Date(d);
+  if (isNaN(dt.getTime())) return null;
   dt.setHours(0,0,0,0);
   return dt;
 };
@@ -32,9 +33,14 @@ export default function App() {
   }, []);
 
   async function loadTasks() {
-    const res = await GetTasks();
-    setTasks(res || []);
+  const res = await GetTasks();
+  console.log("Raw response from backend:", res);
+  if (res && res.length > 0) {
+    console.log("First task structure:", res[0]);
+    console.log("All keys in first task:", Object.keys(res[0]));
   }
+  setTasks(res || []);
+}
 
   // Универсально получить дату из объекта задачи (подстраховка под разный формат)
   function getCreatedDate(task) {
@@ -42,72 +48,83 @@ export default function App() {
     return v ? new Date(v) : new Date(0);
   }
 
+  const getDueDate = (task) => {
+    return task.due_date ?? task.DueDate ?? task.dueDate;
+  };
+
   // Фильтрация основана на выполненных и не выполненных задач
 
 const filteredTasks = tasks
   .filter(t => {
-    // Фильтр по статусу
     if (filter === "active") return !t.completed;
     if (filter === "completed") return t.completed;
     return true;
   })
   .filter(t => {
-    // Фильтр по due_date
-    const due = parseDate(t.dueDate || t.DueDate || t.due_date);
+    const dueValue = getDueDate(t);
+    console.log(`Task "${t.title}" due value:`, dueValue); // Отладка
+    
+    if (!dueValue) {
+      return dueFilter === "all";
+    }
+    
+    const due = parseDate(dueValue);
+    console.log(`Parsed due date for "${t.title}":`, due); // Отладка
+    
+    if (!due) {
+      return dueFilter === "all";
+    }
+    
     const today = new Date();
     today.setHours(0,0,0,0);
+    
+    console.log(`Filter: ${dueFilter}, Due: ${due.toDateString()}, Today: ${today.toDateString()}`); // Отладка
+    
     switch(dueFilter) {
       case "overdue":
-        return due && due < today;
+        return due < today;
       case "today":
-        return due && due.getTime() === today.getTime();
+        return due.getTime() === today.getTime();
       case "week":
         const weekEnd = new Date(today.getTime() + 7*24*60*60*1000);
-        return due && due >= today && due <= weekEnd;
+        return due >= today && due <= weekEnd;
       default:
         return true;
     }
   });
 
 const sortedTasks = [...filteredTasks].sort((a, b) => {
-  // Сортировка по приоритету (если выбран конкретный)
+  // Основная сортировка по дате (всегда применяется)
+  const da = getCreatedDate(a);
+  const db = getCreatedDate(b);
+  const dateSort = sortOrder === "newest" ? db - da : da - db;
+
   if (prioritySort !== "all") {
     const pa = (a.priority || "medium").toLowerCase() === prioritySort ? 0 : 1;
     const pb = (b.priority || "medium").toLowerCase() === prioritySort ? 0 : 1;
+    
     if (pa !== pb) return pa - pb;
-  } else {
-    // High → Medium → Low
-    const pa = priorityOrder.indexOf((a.priority || "medium").toLowerCase());
-    const pb = priorityOrder.indexOf((b.priority || "medium").toLowerCase());
-    if (pa !== pb) return pa - pb;
+    return dateSort;
   }
-
-  // Сортировка по дате создания
-  const da = getCreatedDate(a);
-  const db = getCreatedDate(b);
-  return sortOrder === "newest" ? db - da : da - db;
+  return dateSort;
 });
 
-
-
-
-
-  // Действия: add / toggle / delete — после каждого запроса обновляем список (чтобы sync с бэкендом)
 const handleAdd = async () => {
     const title = newTask.trim();
     if (!title) return;
 
     const taskData = {
         title,
-        completed: false,     // по умолчанию
-        dueDate: dueDate || "", // поле соответствует Go структуре
+        completed: false,
+        dueDate: dueDate || "",
         priority: priority || "medium",
     };
 
-    // Передаём объект taskData, а не только title
+    console.log("Sending taskData to backend:", taskData);
+    console.log("dueDate value:", dueDate);
+
     await AddTask(taskData);
 
-    // Сбрасываем поля
     setNewTask("");
     setDueDate("");
     setPriority("medium");
@@ -147,11 +164,6 @@ const handleAdd = async () => {
       placeholder="Введите задачу..."
       onKeyDown={(e) => { if (e.key === "Enter") handleAdd(); }}
     />
-    <input 
-      type="date"
-      value={dueDate} 
-      onChange={(e) => setDueDate(e.target.value)}
-    />
     <select value={priority} onChange={(e) => setPriority(e.target.value)}>
       <option value="low">Низкий</option>
       <option value="medium">Средний</option>
@@ -167,18 +179,10 @@ const handleAdd = async () => {
     <button onClick={() => setFilter("completed")} className={filter === "completed" ? "active" : ""}>Выполненные</button>
   </div>
 
-  {/* --- Фильтры по due_date --- */}
-  <div className="filters filter-row">
-    <button onClick={() => setDueFilter("all")} className={dueFilter === "all" ? "active" : ""}>Все даты</button>
-    <button onClick={() => setDueFilter("overdue")} className={dueFilter === "overdue" ? "active" : ""}>Просроченные</button>
-    <button onClick={() => setDueFilter("today")} className={dueFilter === "today" ? "active" : ""}>На сегодня</button>
-    <button onClick={() => setDueFilter("week")} className={dueFilter === "week" ? "active" : ""}>На неделю</button>
-  </div>
-
   {/* --- Сортировка --- */}
   <div className="filters filter-row">
     <button onClick={() => setSortOrder(sortOrder === "newest" ? "oldest" : "newest")}>
-      {sortOrder === "newest" ? "Сортировать: новые" : "Сортировать: старые"}
+      {sortOrder === "newest" ? "Сортировать: Новые" : "Сортировать: Старые"}
     </button>
 
     <button onClick={() => {
@@ -186,33 +190,53 @@ const handleAdd = async () => {
       const nextIndex = (order.indexOf(prioritySort) + 1) % order.length;
       setPrioritySort(order[nextIndex]);
     }}>
-      {prioritySort === "all" ? "Приоритет: все" : `Приоритет: ${prioritySort.charAt(0).toUpperCase() + prioritySort.slice(1)}`}
+      {prioritySort === "all" ? "Приоритет: Все" : `Приоритет: ${prioritySort.charAt(0).toUpperCase() + prioritySort.slice(1)}`}
     </button>
   </div>
 
   {/* --- Список задач --- */}
-  <ul className="task-list">
-    {sortedTasks.map((t) => (
-      <li key={t.id} className={`task-item ${(t.priority || "low").toLowerCase()}`}>
-        <span className={`task-title ${t.completed ? "done" : ""}`} onClick={() => handleToggle(t.id)}>
-          <span className="task-icon">{t.completed ? "✅" : "⬜"}</span>
-          {t.title || "(без названия)"}
-        </span>
+<ul className="task-list">
+  {sortedTasks.map((t) => (
+    <li key={t.id} className={`task-item ${(t.priority || "low").toLowerCase()}`}>
+      <span className={`task-title ${t.completed ? "done" : ""}`} onClick={() => handleToggle(t.id)}>
+        <span className="task-icon">{t.completed ? "✅" : "⬜"}</span>
+        {t.title || "(без названия)"}
+      </span>
 
-        <span className={`priority-badge ${(t.priority || "low").toLowerCase()}`}>
-          {t.priority || "low"}
-        </span>
+      <span className={`priority-badge ${(t.priority || "medium").toLowerCase()}`}>
+        {t.priority || "medium"}
+      </span>
 
-        <small className="task-date">{formatDate(getCreatedDate(t))}</small>
+      <small className="task-date">{formatDate(getCreatedDate(t))}</small>
+      {(() => {
+        const dueValue = getDueDate(t);
+        if (dueValue) {
+          const dueDate = parseDate(dueValue);
+          if (dueDate) {
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            let className = "task-due";
+            let prefix = "До: ";
+            
+            if (dueDate < today) {
+              className += " overdue";
+              prefix = "Просрочено: ";
+            } else if (dueDate.getTime() === today.getTime()) {
+              className += " today";
+              prefix = "Сегодня: ";
+            }
+            
+            return <small className={className}>{prefix}{dueDate.toLocaleDateString()}</small>;
+          }
+        }
+        return null;
+      })()}
 
-        {t.due_date && (
-          <small className="task-due">До: {new Date(t.due_date).toLocaleDateString()}</small>
-        )}
-
-        <button className="task-delete" onClick={() => handleDelete(t.id)}>✕</button>
-      </li>
-    ))}
-  </ul>
+      <button className="task-delete" onClick={() => handleDelete(t.id)}>✕</button>
+    </li>
+  ))}
+</ul>
 </div>
 )}
 
