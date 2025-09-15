@@ -6,113 +6,194 @@
   --text-color: #222;
   --card-bg: #fff;
   --border-color: #ddd;
+  --input-bg: #fff;
+  --input-border: #ccc;
+  --button-bg: #fff;
+  --button-text: #222;
+  --button-hover: #f0f0f0;
+  --button-active-bg: #007bff;
+  --button-active-text: #fff;
+  --task-border: #eee;
+  --priority-high-bg: #ffcccc;
+  --priority-medium-bg: #fff2cc;
+  --priority-low-bg: #ccffcc;
+  --delete-color: #c00;
+  --delete-hover: #900;
+  --date-color: #888;
 }
 
 [data-theme="dark"] {
   --bg-color: #181818;
   --text-color: #eee;
-  --card-bg: #222;
-  --border-color: #444;
+  --card-bg: #2d2d2d;
+  --border-color: #555;
+  --input-bg: #3d3d3d;
+  --input-border: #555;
+  --button-bg: #3d3d3d;
+  --button-text: #eee;
+  --button-hover: #4d4d4d;
+  --button-active-bg: #0d6efd;
+  --button-active-text: #fff;
+  --task-border: #444;
+  --priority-high-bg: #4d2d2d;
+  --priority-medium-bg: #4d4d2d;
+  --priority-low-bg: #2d4d2d;
+  --delete-color: #ff6b6b;
+  --delete-hover: #ff5252;
+  --date-color: #bbb;
 }
 
 /* Общие стили страницы */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   background: var(--bg-color);
   color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .container {
   max-width: 720px;
   margin: 24px auto;
-  padding: 16px;
+  padding: 24px;
   background: var(--card-bg);
-  border-radius: 8px;
-  transition: background 0.3s, color 0.3s;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .container {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 h1 {
-  margin-bottom: 12px;
+  margin-bottom: 24px;
   text-align: center;
+  font-size: 2rem;
+  font-weight: 300;
 }
 
 /* --- Input Row --- */
 .input-row {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .input-row input {
   flex: 1;
-  padding: 8px 10px;
+  min-width: 200px;
+  padding: 12px 16px;
   font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 2px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.input-row input:focus {
+  outline: none;
+  border-color: var(--button-active-bg);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+}
+
+.input-row select {
+  padding: 12px 16px;
+  font-size: 14px;
+  border: 2px solid var(--input-border);
+  border-radius: 8px;
+  background: var(--input-bg);
+  color: var(--text-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.input-row select:focus {
+  outline: none;
+  border-color: var(--button-active-bg);
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
 }
 
 /* Кнопка добавления задачи */
 .input-row button {
-  padding: 8px 12px;
+  padding: 12px 20px;
   border: none;
   background: #28a745;
   color: white;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
 }
 
 .input-row button:hover {
   background: #218838;
+  transform: translateY(-1px);
 }
 
 /* --- Общие кнопки --- */
 button {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #222;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+  background: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
   font-size: 14px;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
+  font-weight: 500;
 }
 
 button:hover {
-  background: #f0f0f0;
+  background: var(--button-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] button:hover {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 button.active {
-  background: #007bff;
-  color: white;
-  border-color: #007bff;
+  background: var(--button-active-bg);
+  color: var(--button-active-text);
+  border-color: var(--button-active-bg);
+  box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
 }
 
 /* --- Фильтры --- */
 .filters {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   align-items: center;
-}
-
-.filters button {
-  margin-right: 6px;
+  flex-wrap: wrap;
 }
 
 /* --- Task List --- */
 .task-list {
   list-style: none;
   padding-left: 0;
+  margin: 0;
 }
 
 .task-item {
   display: flex;
   align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
-  transition: background 0.2s;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--task-border);
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.task-item:hover {
+  background: var(--button-hover);
+  padding-left: 12px;
+  padding-right: 12px;
 }
 
 .task-title {
@@ -121,86 +202,176 @@ button.active {
   user-select: none;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
+  font-size: 16px;
+  transition: all 0.3s ease;
 }
 
 .task-icon {
-  font-size: 16px;
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.task-title:hover .task-icon {
+  transform: scale(1.1);
 }
 
 .task-title.done {
   text-decoration: line-through;
-  color: gray;
-  opacity: 0.7;
+  opacity: 0.6;
+}
+
+[data-theme="dark"] .task-title.done {
+  color: #888;
 }
 
 /* Дата создания и Due Date */
 .task-date,
 .task-due {
-  color: #888;
+  color: var(--date-color);
   font-size: 12px;
   margin-right: 12px;
+  font-weight: 500;
+  background: var(--button-hover);
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
 }
 
 /* Кнопка удаления */
 .task-delete {
-  color: #c00;
+  color: var(--delete-color);
   border: none;
   background: transparent;
   cursor: pointer;
-  font-size: 16px;
-  transition: color 0.2s;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
 }
 
 .task-delete:hover {
-  color: #900;
+  color: var(--delete-hover);
+  background: rgba(255, 107, 107, 0.1);
+  transform: scale(1.1);
 }
 
 /* --- Приоритетные бейджи --- */
 .priority-badge {
-  margin-left: 10px;
-  padding: 2px 6px;
-  border-radius: 6px;
+  margin-left: 12px;
+  margin-right: 12px;
+  padding: 4px 12px;
+  border-radius: 20px;
   font-size: 0.8em;
   font-weight: bold;
-  text-transform: capitalize;
+  text-transform: uppercase;
   display: inline-block;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.priority-badge.high { background: red; color: white; }
-.priority-badge.medium { background: orange; color: white; }
-.priority-badge.low { background: green; color: white; }
+.priority-badge.high { 
+  background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  color: white; 
+}
+
+.priority-badge.medium { 
+  background: linear-gradient(135deg, #ffa726, #ff9800);
+  color: white; 
+}
+
+.priority-badge.low { 
+  background: linear-gradient(135deg, #66bb6a, #4caf50);
+  color: white; 
+}
 
 /* --- Цвет фона задачи по приоритету --- */
-.task-item.high { background-color: #ffcccc; }
-.task-item.medium { background-color: #fff2cc; }
-.task-item.low { background-color: #ccffcc; }
+.task-item.high { 
+  background: var(--priority-high-bg);
+  border-left: 4px solid #ff6b6b;
+}
+
+.task-item.medium { 
+  background: var(--priority-medium-bg);
+  border-left: 4px solid #ffa726;
+}
+
+.task-item.low { 
+  background: var(--priority-low-bg);
+  border-left: 4px solid #66bb6a;
+}
+
+/* --- Кнопка переключения темы --- */
+.input-row button:first-child {
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: 2px solid var(--border-color);
+}
+
+.input-row button:first-child:hover {
+  background: var(--button-hover);
+}
 
 /* --- Адаптивность --- */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .container {
-    margin: 0;
-    border-radius: 0;
-    max-width: 100%;
-    padding: 12px;
+    margin: 12px;
+    padding: 16px;
+    border-radius: 8px;
   }
 
   .input-row {
     flex-direction: column;
   }
 
+  .input-row input {
+    min-width: auto;
+  }
+
   .filters {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 8px;
+  }
+
+  .filters button {
+    width: 100%;
+    text-align: center;
   }
 
   .task-item {
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
+    padding: 12px;
   }
 
-  .task-date {
-    margin: 4px 0;
+  .task-title {
+    width: 100%;
+  }
+
+  .task-date,
+  .task-due {
+    margin: 0;
+  }
+
+  .priority-badge {
+    margin: 0;
+  }
+
+  .task-delete {
+    align-self: flex-end;
+    margin-top: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .task-item {
+    padding: 8px;
   }
 }
