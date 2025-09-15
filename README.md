@@ -87,6 +87,8 @@ Linux, MacOS:
 ```
 ## Видео-демострация
  Видео-демонстрацию проекта можно посмотреть пройдя по данной ссылке (https://drive.google.com/file/d/1j01a6OOgBNI3i64PdQWg7VzBulVCMe89/view?usp=drive_link)
+ 
+ 
  Так же все скриншоты имеются в отделе frontend\src\assets
 
 
