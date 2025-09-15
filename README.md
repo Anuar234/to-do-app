@@ -21,10 +21,12 @@ Desktop приложение для управления списком зада
 git clone (https://github.com/Anuar234/to-do-app.git)
 cd to-do-app
 
-### 3.0 Установить фронтенд-зависимости
-cd todo-app\frontend
+### 3. Установить фронтенд-зависимости
+```bash
+cd todo-app/frontend
 npm install
-cd..
+cd ..
+
 
 ### 4.0 Запустить приложение в режиме разработчки
 - wails dev ИЛИ можно запустить скрипты на:
