@@ -26,7 +26,7 @@ cd to-do-app
 cd todo-app/frontend
 npm install
 cd ..
-
+```
 
 ### 4.0 Запустить приложение в режиме разработчки
 - wails dev ИЛИ можно запустить скрипты на:
